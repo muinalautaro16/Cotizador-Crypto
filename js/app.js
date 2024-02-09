@@ -32,22 +32,41 @@ async function consultarCriptomonedas() {
     try {
         const respuesta = await fetch(url);
         const resultado = await respuesta.json();
-        const criptomonedas = obtenerCriptomonedas(resultado.Data);
+        const criptomonedas = await obtenerCriptomonedas(resultado.Data);
         selectCriptomonedas(criptomonedas);
     } catch (error) {
         console.log(error);
     }    
 }
 
+// Llena el select
 function selectCriptomonedas(criptomonedas) {
-    criptomonedas.forEach( cripto => {
-        const { FullName, Name } = cripto.CoinInfo;
+
+    // Conocer tiempo de ejecucion
+    const inicio = performance.now();
+
+
+    // criptomonedas.forEach( cripto => {
+    //     const { FullName, Name } = cripto.CoinInfo;
+    //     const option = document.createElement('option');
+    //     option.value = Name;
+    //     option.textContent = FullName;
+    //     // Insertar el html
+    //     criptomonedasSelect.appendChild(option);
+    // });
+
+    for(let i = 0; i < criptomonedas.length; i++) {
+        const { FullName, Name } = criptomonedas[i].CoinInfo;
         const option = document.createElement('option');
         option.value = Name;
         option.textContent = FullName;
-        
+        // insertar el HTML
         criptomonedasSelect.appendChild(option);
-    });
+    }
+
+    const fin = performance.now();
+
+    console.log(fin - inicio);
 }
 
 function leerValor(e) {
@@ -92,6 +111,9 @@ function mostrarAlerta(msg) {
 }
 
 async function consultarAPI() {
+
+    const inicio = performance.now();
+
     const { moneda, criptomoneda } = objBusqueda;
 
     mostrarSpinner();
@@ -109,6 +131,10 @@ async function consultarAPI() {
     } catch (error) {
         console.log(error);
     }
+
+    const fin = performance.now();
+
+    console.log(fin - inicio);
 }
 
 function mostrarCotizacionHTML(cotizacion) {
@@ -131,6 +157,7 @@ function mostrarCotizacionHTML(cotizacion) {
 
     const ultimaActualizacion = document.createElement('p');
     ultimaActualizacion.innerHTML = `Ultima actualizacion: <span>${LASTUPDATE}</span>`;
+
 
     resultado.appendChild(precio);
     resultado.appendChild(precioAlto);
